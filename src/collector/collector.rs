@@ -9,8 +9,8 @@ impl Collector {
     }
 
     pub fn collect_memory(&self) -> MemoryInfo {
-        let system = System::new();
-
-        MemoryInfo::new(system.total_memory())
+        let mut system = System::new();
+        system.refresh_all();
+        MemoryInfo::new(system.used_memory(), system.total_memory())
     }
 }

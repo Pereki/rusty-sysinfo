@@ -1,9 +1,13 @@
 pub struct MemoryInfo {
-    pub memory_usage: u64,
+    pub used_memory: u64,
+    pub total_memory: u64,
 }
 
 impl MemoryInfo {
-    pub fn new(memory_usage: u64) -> MemoryInfo {
-        MemoryInfo { memory_usage }
+    pub fn new(used_memory: u64, total_memory: u64) -> MemoryInfo {
+        MemoryInfo {
+            used_memory,
+            total_memory,
+        }
     }
 }
