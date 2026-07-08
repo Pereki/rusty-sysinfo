@@ -10,7 +10,7 @@ use crate::view::view::View;
 fn main() {
     let collector = Collector::new();
     let view = View::new();
-    let controller = Controller::new(view, collector);
+    let mut controller = Controller::new(view, collector);
 
     controller.boot_up();
 }

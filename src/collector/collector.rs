@@ -1,22 +1,27 @@
 use crate::model::{cpu_info::CpuInfo, memory_info::MemoryInfo};
 use sysinfo::System;
 
-pub struct Collector {}
+pub struct Collector {
+    system: System,
+}
 
 impl Collector {
     pub fn new() -> Self {
-        Collector {}
+        let mut system = System::new();
+        system.refresh_all();
+
+        Collector { system }
     }
 
     pub fn collect_memory(&self) -> MemoryInfo {
-        let mut system = System::new();
-        system.refresh_all();
-        MemoryInfo::new(system.used_memory(), system.total_memory())
+        MemoryInfo::new(self.system.used_memory(), self.system.total_memory())
     }
 
     pub fn collect_cpu(&self) -> CpuInfo {
-        let mut system = System::new();
-        system.refresh_all();
-        CpuInfo::new(system.global_cpu_usage())
+        CpuInfo::new(self.system.global_cpu_usage())
+    }
+
+    pub fn refresh_all(&mut self) {
+        self.system.refresh_all();
     }
 }
