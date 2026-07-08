@@ -12,6 +12,9 @@ impl Controller {
     }
 
     pub fn boot_up(&self) {
-        self.view.render(self.collector.collect_memory());
+        self.view.render(
+            self.collector.collect_memory(),
+            self.collector.collect_cpu(),
+        );
     }
 }
