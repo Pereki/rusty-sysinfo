@@ -49,10 +49,15 @@ cargo test
 
 ```text
 rusty-sysinfo/
-├── src/
-│   └── main.rs
+├── src/	
+│   ├── main.rs
+│   ├── collector/
+│   ├── controller/
+│   ├── model/
+│   └── view/
 ├── Cargo.toml
 └── README.md
+ ```
 ```
 
 ## 🛠 Development
