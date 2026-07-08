@@ -1,5 +1,5 @@
 use crate::model::{cpu_info::CpuInfo, memory_info::MemoryInfo};
-
+use crate::view::dial::Dial;
 pub struct View {}
 
 impl View {
@@ -21,5 +21,12 @@ impl View {
         );
 
         println!("CPU Usage: {:.2}%", cpu_info.percentage);
+        let diameter = 20;
+
+        let canvas = Dial::render_dial(&(percentage as f32), &diameter);
+        for row in &canvas {
+            let line: String = row.iter().collect();
+            println!("{}", line);
+        }
     }
 }
