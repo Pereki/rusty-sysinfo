@@ -2,6 +2,8 @@ pub struct Dial {}
 
 impl Dial {
     const SCALE_MULTIPLIER: f32 = 2.0;
+    const HANDS_SYMBOL: char = '*';
+    const BORDER_SYMBOL: char = '#';
 
     pub fn render_dial(percentage: &f32, diameter: &i32) -> Vec<Vec<char>> {
         let canvas_width = diameter.to_owned() * Dial::SCALE_MULTIPLIER as i32;
@@ -33,7 +35,7 @@ impl Dial {
                 + (border_radians.cos() * Dial::SCALE_MULTIPLIER * radius as f32).round() as i32;
             let border_y = center_y - (border_radians.sin() * radius as f32).round() as i32;
 
-            canvas[border_y as usize][border_x as usize] = '#'
+            canvas[border_y as usize][border_x as usize] = Self::BORDER_SYMBOL;
         }
     }
 
@@ -53,7 +55,7 @@ impl Dial {
         for y in 0..radius {
             let x_coordinate = center_x + ((dx * Dial::SCALE_MULTIPLIER * y as f32) as i32);
             let y_coordinate = center_y - ((dy * y as f32) as i32);
-            canvas[y_coordinate as usize][x_coordinate as usize] = '*'
+            canvas[y_coordinate as usize][x_coordinate as usize] = Self::HANDS_SYMBOL;
         }
     }
 }
