@@ -1,5 +1,6 @@
 use crate::model::{cpu_info::CpuInfo, memory_info::MemoryInfo};
-
+use crate::view::dial::Dial;
+use crate::view::layout::Layout;
 pub struct View {}
 
 impl View {
@@ -21,5 +22,14 @@ impl View {
         );
 
         println!("CPU Usage: {:.2}%", cpu_info.percentage);
+        let diameter = 20;
+
+        let canvas = Dial::render_dial(&(cpu_info.percentage as f32), &diameter);
+        let canvas2 = Dial::render_dial(&(percentage as f32), &diameter);
+        let mut vec_of_vecs = Vec::new();
+        vec_of_vecs.push(canvas);
+        vec_of_vecs.push(canvas2);
+
+        Layout::render_together(vec_of_vecs);
     }
 }
