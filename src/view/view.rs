@@ -23,6 +23,7 @@ impl View {
     }
 
     pub fn render(&self, memory_info: MemoryInfo, cpu_info: CpuInfo) {
+        print!("\x1B[2J\x1B[H");
         let used_memory_in_megabyte = memory_info.used_memory / 1024;
         let total_memory_in_megabyte = memory_info.total_memory / 1024;
         let percentage = match total_memory_in_megabyte {
