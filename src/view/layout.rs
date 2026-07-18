@@ -1,7 +1,7 @@
 pub struct Layout {}
 
 impl Layout {
-    pub fn render_together(mut list_of_canvases: Vec<Vec<Vec<char>>>) {
+    pub fn render_together(mut list_of_canvases: Vec<Vec<Vec<String>>>) {
         if list_of_canvases.len() == 0 {
             return;
         }
@@ -15,11 +15,8 @@ impl Layout {
 
             for canv_canv in list_of_canvases.iter() {
                 if canv_canv.len() + iter >= max_size {
-                    st = st
-                        + &canv_canv[iter - (max_size - canv_canv.len())]
-                            .iter()
-                            .collect::<String>()
-                        + "     ";
+                    st.push_str(&canv_canv[iter - (max_size - canv_canv.len())].join(""));
+                    st.push_str("     ");
                 }
             }
 

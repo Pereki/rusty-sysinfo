@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct MemoryInfo {
     pub used_memory: u64,
     pub total_memory: u64,

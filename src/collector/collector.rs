@@ -1,27 +1,52 @@
-use crate::model::{cpu_info::CpuInfo, memory_info::MemoryInfo};
+use std::thread;
+
+use crate::model::{
+    cpu_info::{self, CpuInfo},
+    event::Event,
+    memory_info::MemoryInfo,
+};
 use sysinfo::System;
+use tokio::{sync::broadcast::Sender, time};
 
 pub struct Collector {
     system: System,
+    sender: Sender<Event>,
 }
 
 impl Collector {
-    pub fn new() -> Self {
+    pub fn new(sender: Sender<Event>) -> Self {
         let mut system = System::new();
         system.refresh_all();
 
-        Collector { system }
+        Collector { system, sender }
     }
 
-    pub fn collect_memory(&self) -> MemoryInfo {
+    fn collect_memory(&self) -> MemoryInfo {
         MemoryInfo::new(self.system.used_memory(), self.system.total_memory())
     }
 
-    pub fn collect_cpu(&self) -> CpuInfo {
+    fn collect_cpu(&self) -> CpuInfo {
         CpuInfo::new(self.system.global_cpu_usage())
     }
 
-    pub fn refresh_all(&mut self) {
+    fn refresh_all(&mut self) {
         self.system.refresh_all();
+    }
+
+    pub async fn start(&mut self) {
+        println!("Starting collecting data...");
+        let one_second = tokio::time::Duration::from_secs(1);
+        loop {
+            println!("refreshing.");
+            self.refresh_all();
+            let memory_info = self.collect_memory();
+            let cpu_info = self.collect_cpu();
+            self.sender.send(Event::new(
+                crate::model::event::EventType::UPDATE,
+                memory_info,
+                cpu_info,
+            ));
+            tokio::time::sleep(one_second).await;
+        }
     }
 }

@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct CpuInfo {
     pub percentage: f32,
 }
