@@ -1,4 +1,6 @@
-#[derive(Clone)]
+use serde::Serialize;
+
+#[derive(Clone, Copy, Serialize)]
 pub struct MemoryInfo {
     pub used_memory: u64,
     pub total_memory: u64,

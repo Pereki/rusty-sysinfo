@@ -1,16 +1,15 @@
-use crate::model::{
-    cpu_info::{self, CpuInfo},
-    memory_info::{self, MemoryInfo},
-};
+use serde::Serialize;
 
-#[derive(Clone)]
+use crate::model::{cpu_info::CpuInfo, memory_info::MemoryInfo};
+
+#[derive(Clone, Copy, Serialize)]
 pub struct Event {
     pub event_type: EventType,
     pub memory_info: MemoryInfo,
     pub cpu_info: CpuInfo,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy, Serialize)]
 pub enum EventType {
     UPDATE,
 }

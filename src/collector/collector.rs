@@ -1,12 +1,6 @@
-use std::thread;
-
-use crate::model::{
-    cpu_info::{self, CpuInfo},
-    event::Event,
-    memory_info::MemoryInfo,
-};
+use crate::model::{cpu_info::CpuInfo, event::Event, memory_info::MemoryInfo};
 use sysinfo::System;
-use tokio::{sync::broadcast::Sender, time};
+use tokio::sync::broadcast::Sender;
 
 pub struct Collector {
     system: System,
@@ -34,7 +28,7 @@ impl Collector {
     }
 
     pub async fn start(&mut self) {
-        println!("Starting collecting data...");
+        println!("Starting collecting data.....");
         let one_second = tokio::time::Duration::from_secs(1);
         loop {
             println!("refreshing.");

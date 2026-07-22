@@ -1,4 +1,6 @@
-#[derive(Clone)]
+use serde::Serialize;
+
+#[derive(Clone, Copy, Serialize)]
 pub struct CpuInfo {
     pub percentage: f32,
 }
