@@ -10,6 +10,7 @@ use axum::Router;
 use axum::extract::State;
 use axum::routing::get;
 use tokio::sync::RwLock;
+use tower_http::cors::{Any, CorsLayer};
 
 use crate::api::rest::RestClient;
 use crate::api::websocket::WebSocketClient;
@@ -43,11 +44,17 @@ async fn main() {
         tokio::spawn(async move { cloned_client.receive(&mut eventbus.subscribe()).await });
     let view_task = tokio::spawn(async move { view.listen().await });
 
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods(Any)
+        .allow_headers(Any);
+
     let app = Router::new()
         .route("/api/status", get(RestClient::get_latest_event))
         .with_state(rest_client.clone())
         .route("/ws", get(WebSocketClient::setup_ws))
-        .with_state(websocket.clone());
+        .with_state(websocket.clone())
+        .layer(cors);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
 
