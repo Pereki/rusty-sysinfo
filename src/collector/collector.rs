@@ -1,4 +1,4 @@
-use crate::model::{cpu_info::CpuInfo, event::Event, memory_info::MemoryInfo};
+use crate::model::{cpu_info::CpuInfo, event::Event, memory_info::MemoryInfo, traits::AsyncSender};
 use sysinfo::System;
 use tokio::sync::broadcast::Sender;
 
@@ -26,8 +26,10 @@ impl Collector {
     fn refresh_all(&mut self) {
         self.system.refresh_all();
     }
+}
 
-    pub async fn start(&mut self) {
+impl AsyncSender for Collector {
+    async fn run(&mut self) {
         println!("Starting collecting data.....");
         let one_second = tokio::time::Duration::from_secs(1);
         loop {
@@ -35,11 +37,19 @@ impl Collector {
             self.refresh_all();
             let memory_info = self.collect_memory();
             let cpu_info = self.collect_cpu();
-            self.sender.send(Event::new(
+            let result = self.sender.send(Event::new(
                 crate::model::event::EventType::UPDATE,
                 memory_info,
                 cpu_info,
             ));
+
+            match result {
+                Ok(_) => {}
+                Err(e) => {
+                    eprintln!("Failed to send event: {}", e);
+                }
+            };
+
             tokio::time::sleep(one_second).await;
         }
     }

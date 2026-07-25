@@ -1,25 +1,15 @@
 use tokio::sync::broadcast::Receiver;
 
-use crate::model::event::{self, Event};
+use crate::model::event::Event;
+use crate::model::traits::AsyncReceiver;
 use crate::model::{cpu_info::CpuInfo, memory_info::MemoryInfo};
 use crate::view::dial::Dial;
 use crate::view::layout::Layout;
-pub struct View {
-    receiver: Receiver<Event>,
-}
+pub struct View {}
 
 impl View {
     pub fn new(receiver: Receiver<Event>) -> Self {
-        Self { receiver }
-    }
-
-    pub async fn listen(&mut self) {
-        loop {
-            match self.receiver.recv().await {
-                Ok(event) => self.render(event.memory_info, event.cpu_info),
-                Err(_) => println!("Error fetching event"),
-            }
-        }
+        Self {}
     }
 
     pub fn render(&self, memory_info: MemoryInfo, cpu_info: CpuInfo) {
@@ -46,5 +36,16 @@ impl View {
         vec_of_vecs.push(canvas2);
 
         Layout::render_together(vec_of_vecs);
+    }
+}
+
+impl AsyncReceiver for View {
+    async fn receive(&mut self, receiver: &mut Receiver<Event>) {
+        loop {
+            match receiver.recv().await {
+                Ok(event) => self.render(event.memory_info, event.cpu_info),
+                Err(_) => println!("Error fetching event"),
+            }
+        }
     }
 }

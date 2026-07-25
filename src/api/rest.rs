@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
-use crate::model::{cpu_info::CpuInfo, event::Event, memory_info::MemoryInfo};
+use crate::model::{event::Event, traits::AsyncReceiver};
 use axum::{Json, extract::State};
-use tokio::sync::{RwLock, broadcast::Receiver};
+use tokio::sync::{Mutex, RwLock, broadcast::Receiver};
 
 #[derive(Clone)]
 pub struct RestClient {
@@ -16,16 +16,28 @@ impl RestClient {
         }
     }
 
-    pub async fn receive(&self, receiver: &mut Receiver<Event>) {
+    pub async fn get_latest_event(
+        State(rest_client): State<Arc<Mutex<RestClient>>>,
+    ) -> Json<Event> {
+        Json(
+            rest_client
+                .lock()
+                .await
+                .current_event_state
+                .read()
+                .await
+                .clone(),
+        )
+    }
+}
+
+impl AsyncReceiver for RestClient {
+    async fn receive(&mut self, receiver: &mut Receiver<Event>) {
         loop {
             match receiver.recv().await {
                 Ok(el) => *self.current_event_state.write().await = el,
                 Err(_) => println!("Error fetching"),
             }
         }
-    }
-
-    pub async fn get_latest_event(State(rest_client): State<Arc<RestClient>>) -> Json<Event> {
-        Json(rest_client.current_event_state.read().await.clone())
     }
 }

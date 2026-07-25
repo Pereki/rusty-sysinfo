@@ -1,15 +1,11 @@
 use std::sync::Arc;
 
-use crate::{
-    eventbus::eventbus::Eventbus,
-    model::{cpu_info::CpuInfo, event::Event, memory_info::MemoryInfo},
-};
+use crate::{eventbus::eventbus::Eventbus, model::event::Event};
 use axum::{
-    Json,
     extract::{State, WebSocketUpgrade, ws::WebSocket},
     response::IntoResponse,
 };
-use tokio::sync::{RwLock, broadcast::Receiver};
+use tokio::sync::broadcast::Receiver;
 
 #[derive(Clone)]
 pub struct WebSocketClient {

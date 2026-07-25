@@ -13,13 +13,13 @@ use crate::eventbus::eventbus::Eventbus;
 use crate::model::cpu_info::CpuInfo;
 use crate::model::event::Event;
 use crate::model::memory_info::MemoryInfo;
+use crate::model::traits::{AsyncReceiver, AsyncSender};
 use crate::view::view::View;
 use axum::Router;
-use axum::extract::State;
-use axum::handler::{Handler, HandlerWithoutStateExt};
+use axum::handler::HandlerWithoutStateExt;
 use axum::response::Html;
 use axum::routing::get;
-use tokio::sync::RwLock;
+use tokio::sync::{Mutex, RwLock};
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeDir;
 
@@ -45,14 +45,19 @@ async fn main() {
         CpuInfo::new(0.00),
     )));
 
-    let mut rest_client = Arc::new(RestClient::new(current_event_state.clone()));
+    let rest_client = Arc::new(Mutex::new(RestClient::new(current_event_state.clone())));
 
-    let collector_task = tokio::spawn(async move { collector.start().await });
+    let collector_task = tokio::spawn(async move { collector.run().await });
 
-    let mut cloned_client = rest_client.clone();
-    let rest_client_task =
-        tokio::spawn(async move { cloned_client.receive(&mut eventbus.subscribe()).await });
-    let view_task = tokio::spawn(async move { view.listen().await });
+    let rest_client_clone = rest_client.clone();
+    let mut rest_receiver = eventbus.subscribe();
+    let rest_client_task = tokio::spawn(async move {
+        let mut guard = rest_client_clone.lock().await;
+        guard.receive(&mut rest_receiver).await;
+    });
+
+    let mut view_receiver = eventbus.subscribe();
+    let view_task = tokio::spawn(async move { view.receive(&mut view_receiver).await });
 
     let cors = CorsLayer::new()
         .allow_origin(Any)
@@ -72,6 +77,6 @@ async fn main() {
     println!("Listening on http://localhost:3000");
 
     axum::serve(listener, app).await.unwrap();
-
-    let _ = tokio::join!(collector_task, view_task, rest_client_task);
 }
+
+pub async fn start_async_task() {}
