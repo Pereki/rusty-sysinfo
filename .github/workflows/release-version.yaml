@@ -29,6 +29,9 @@ jobs:
       - name: Build frontend
         run: pnpm --dir ./frontend run build
 
+      - name: pnpm install
+        run: pnpm --dir ./frontend install
+
       - name: Move frontend build
         run: mv ./frontend/dist ./frontend-dir
 
