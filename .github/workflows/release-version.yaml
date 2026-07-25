@@ -41,4 +41,4 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: target/release/rusty-sysinfo
+          files: target/rusty-sysinfo
