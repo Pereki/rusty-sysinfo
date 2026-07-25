@@ -2,14 +2,14 @@ use serde::Serialize;
 
 use crate::model::{cpu_info::CpuInfo, memory_info::MemoryInfo};
 
-#[derive(Clone, Copy, Serialize)]
+#[derive(Clone, Copy, Serialize, Debug)]
 pub struct Event {
     pub event_type: EventType,
     pub memory_info: MemoryInfo,
     pub cpu_info: CpuInfo,
 }
 
-#[derive(Clone, Copy, Serialize)]
+#[derive(Clone, Copy, Serialize, Debug)]
 pub enum EventType {
     UPDATE,
 }

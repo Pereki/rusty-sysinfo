@@ -32,22 +32,22 @@ async fn main() {
     let mut collector = Collector::new(eventbus.publish());
     let mut view = View::new(eventbus.subscribe());
 
-    let mut websocket = Arc::new(WebSocketClient::new(eventbus.clone()));
+    let websocket = Arc::new(WebSocketClient::new(eventbus.clone()));
     let current_event_state = Arc::new(RwLock::new(defaults.default_event));
 
     let rest_client = Arc::new(Mutex::new(RestClient::new(current_event_state.clone())));
 
-    let collector_task = tokio::spawn(async move { collector.run().await });
+    let _ = tokio::spawn(async move { collector.run().await });
 
     let rest_client_clone = rest_client.clone();
     let mut rest_receiver = eventbus.subscribe();
-    let rest_client_task = tokio::spawn(async move {
+    let _ = tokio::spawn(async move {
         let mut guard = rest_client_clone.lock().await;
         guard.receive(&mut rest_receiver).await;
     });
 
     let mut view_receiver = eventbus.subscribe();
-    let view_task = tokio::spawn(async move { view.receive(&mut view_receiver).await });
+    let _ = tokio::spawn(async move { view.receive(&mut view_receiver).await });
 
     let cors = CorsLayer::new()
         .allow_origin(Any)
