@@ -18,7 +18,7 @@
 <div class="ml-4 mt-2 flex gap-2 items-center justify-between mr-4">
     <div class="flex flex-col"><div>{{ totalDescription }}</div><div><span class="text-xl">{{ total / 1024 / 1024 / 1024 }} GB</span></div></div>
     <div class="flex flex-col"><div>{{ inUseDescription }}</div><div><span class="text-xl">{{  (inUse / 1024 / 1024 / 1024).toFixed(2) }} GB</span></div></div>
-    <div class="flex flex-col"><div>Free</div><div><span class="text-xl">{{  ((total / 1024 / 1024 / 1024 ) - (inUse / 1024 / 1024 / 1024).toFixed(2)).toFixed(2) }} GB</span></div></div>
+    <div class="flex flex-col"><div>Free</div><div><span class="text-xl">{{  ((total / 1024 / 1024 / 1024) - (inUse / 1024 / 1024 / 1024)).toFixed(2) }} GB</span></div></div>
 </div>
 
 
@@ -40,7 +40,7 @@ const color = computed(() => {
     return 'green'
 })
 
-const percentages = ref([])
+const percentages = ref<number[]>([])
 
 const statusEmoji = computed(() => {
     if (props.percentage > 50) return '⚠️'

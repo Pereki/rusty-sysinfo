@@ -10,7 +10,7 @@
 <v-container>
     <h1 class="text-2xl">Hardware Information</h1>
     <v-container >
-    <cpu-status-box v-if="status" description="Usage" heading="CPU" :percentage="status.cpu_info.percentage.toFixed(2)" />
+    <cpu-status-box v-if="status" heading="CPU" :percentage="status.cpu_info.percentage" />
 
     <memory-status-box
 v-if="status"
@@ -18,7 +18,7 @@ description="Usage"
 heading="Memory"
 :in-use="status.memory_info.used_memory"
 in-use-description="In Use"
-:percentage="(status.memory_info.used_memory / status.memory_info.total_memory * 100).toFixed(2)"
+:percentage="status.memory_info.used_memory / status.memory_info.total_memory * 100"
 percentage-description="Usage"
 :total="status.memory_info.total_memory"
 total-description="Total Memory"
