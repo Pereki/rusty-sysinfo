@@ -1,0 +1,41 @@
+name: Publish release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Build frontend
+        run: pnpm --dir ./frontend run build
+
+      - name: Move frontend build
+        run: mv ./frontend/dist ./frontend-dir
+
+      - name: Build project
+        run: cargo build --verbose
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: target/release/rusty-sysinfo
