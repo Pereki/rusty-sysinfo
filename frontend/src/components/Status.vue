@@ -8,8 +8,8 @@
 </v-app-bar>
 
 <v-container>
-    <h1 class="text-2xl">Hardware Information</h1>
-    <v-container >
+    <h1 class="text-2xl font-bold">Hardware Information</h1>
+    <div class="flex gap-5 mt-5 mb-5">
     <cpu-status-box v-if="status" heading="CPU" :percentage="status.cpu_info.percentage" />
 
     <memory-status-box
@@ -23,7 +23,7 @@ percentage-description="Usage"
 :total="status.memory_info.total_memory"
 total-description="Total Memory"
 />
-  </v-container>
+    </div>
   <v-divider></v-divider>
 </v-container>
 </template>
