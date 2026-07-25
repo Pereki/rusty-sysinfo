@@ -1,7 +1,7 @@
 <template>
 <v-card class="w-80 h-100" :title="statusEmoji + ' ' + heading">
 
-    <div class="ml-4 mt-2"><span class="text-6xl">{{ percentage }}</span> <span class="text-2xl font-bold">%</span></div>
+    <div class="ml-4 mt-2"><span class="text-6xl">{{ percentage.toFixed(2) }}</span> <span class="text-2xl font-bold">%</span></div>
     <div class="ml-5 font-bold text-2xl decoration-2">Usage</div>
     <v-sparkline
       color="rgb(var(--v-theme-primary))"
