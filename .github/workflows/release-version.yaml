@@ -36,9 +36,9 @@ jobs:
         run: mv ./frontend/dist ./frontend-dir
 
       - name: Build project
-        run: cargo build --verbose
+        run: cargo build --release
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: target/rusty-sysinfo
+          files: target/release/rusty-sysinfo
