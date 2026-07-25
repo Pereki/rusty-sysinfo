@@ -2,7 +2,7 @@ pub struct Layout {}
 
 impl Layout {
     pub fn render_together(mut list_of_canvases: Vec<Vec<Vec<String>>>) {
-        if list_of_canvases.len() == 0 {
+        if list_of_canvases.is_empty() {
             return;
         }
 

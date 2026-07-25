@@ -30,10 +30,8 @@ impl Collector {
 
 impl AsyncSender for Collector {
     async fn run(&mut self) {
-        println!("Starting collecting data.....");
         let one_second = tokio::time::Duration::from_secs(1);
         loop {
-            println!("refreshing.");
             self.refresh_all();
             let memory_info = self.collect_memory();
             let cpu_info = self.collect_cpu();

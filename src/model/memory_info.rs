@@ -13,4 +13,8 @@ impl MemoryInfo {
             total_memory,
         }
     }
+
+    pub fn default() -> MemoryInfo {
+        MemoryInfo::new(0, 0)
+    }
 }

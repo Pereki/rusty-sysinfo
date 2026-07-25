@@ -10,40 +10,30 @@ use crate::api::rest::RestClient;
 use crate::api::websocket::WebSocketClient;
 use crate::collector::collector::Collector;
 use crate::eventbus::eventbus::Eventbus;
-use crate::model::cpu_info::CpuInfo;
-use crate::model::event::Event;
-use crate::model::memory_info::MemoryInfo;
+
+use crate::model::defaults::Defaults;
+
 use crate::model::traits::{AsyncReceiver, AsyncSender};
 use crate::view::view::View;
 use axum::Router;
-use axum::handler::HandlerWithoutStateExt;
-use axum::response::Html;
+
 use axum::routing::get;
 use tokio::sync::{Mutex, RwLock};
+
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeDir;
 
-async fn spa_fallback() -> Html<String> {
-    match tokio::fs::read_to_string("frontend/sysinfo-frontend/dist/index.html").await {
-        Ok(content) => Html(content),
-        Err(_) => Html("<h1>Frontend not built</h1><p>Run pnpm build</p>".into()),
-    }
-}
-
 #[tokio::main]
 async fn main() {
+    let defaults = Defaults::new();
+
     let eventbus = Arc::new(Eventbus::new());
-    let static_dir = format!("{}/frontend-dir", env!("CARGO_MANIFEST_DIR"));
 
     let mut collector = Collector::new(eventbus.publish());
     let mut view = View::new(eventbus.subscribe());
 
     let mut websocket = Arc::new(WebSocketClient::new(eventbus.clone()));
-    let current_event_state = Arc::new(RwLock::new(Event::new(
-        crate::model::event::EventType::UPDATE,
-        MemoryInfo::new(0, 0),
-        CpuInfo::new(0.00),
-    )));
+    let current_event_state = Arc::new(RwLock::new(defaults.default_event));
 
     let rest_client = Arc::new(Mutex::new(RestClient::new(current_event_state.clone())));
 
@@ -69,14 +59,13 @@ async fn main() {
         .with_state(rest_client.clone())
         .route("/ws", get(WebSocketClient::setup_ws))
         .with_state(websocket.clone())
-        .fallback_service(ServeDir::new(static_dir).fallback(spa_fallback.into_service()))
+        .fallback_service(ServeDir::new(defaults.frontend_path))
         .layer(cors);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let addr = format!("0.0.0.0:{}", defaults.port.to_string());
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
     println!("Listening on http://localhost:3000");
 
     axum::serve(listener, app).await.unwrap();
 }
-
-pub async fn start_async_task() {}

@@ -22,4 +22,8 @@ impl Event {
             cpu_info,
         }
     }
+
+    pub fn default() -> Event {
+        Event::new(EventType::UPDATE, MemoryInfo::default(), CpuInfo::default())
+    }
 }

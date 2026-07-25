@@ -9,4 +9,8 @@ impl CpuInfo {
     pub fn new(percentage: f32) -> Self {
         CpuInfo { percentage }
     }
+
+    pub fn default() -> CpuInfo {
+        CpuInfo::new(0.0)
+    }
 }

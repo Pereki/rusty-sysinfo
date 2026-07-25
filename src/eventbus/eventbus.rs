@@ -9,7 +9,7 @@ pub struct Eventbus {
 impl Eventbus {
     pub fn new() -> Self {
         let (tx, _) = broadcast::channel(255);
-        Eventbus { tx: tx }
+        Eventbus { tx }
     }
 
     pub fn subscribe(&self) -> Receiver<Event> {
