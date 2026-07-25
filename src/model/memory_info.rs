@@ -1,3 +1,6 @@
+use serde::Serialize;
+
+#[derive(Clone, Copy, Serialize, Debug)]
 pub struct MemoryInfo {
     pub used_memory: u64,
     pub total_memory: u64,
@@ -9,5 +12,9 @@ impl MemoryInfo {
             used_memory,
             total_memory,
         }
+    }
+
+    pub fn default() -> MemoryInfo {
+        MemoryInfo::new(0, 0)
     }
 }
