@@ -30,7 +30,7 @@ async fn main() {
     let eventbus = Arc::new(Eventbus::new());
 
     let mut collector = Collector::new(eventbus.publish());
-    let mut view = View::new(eventbus.subscribe());
+    let mut view = View::new();
 
     let websocket = Arc::new(WebSocketClient::new(eventbus.clone()));
     let current_event_state = Arc::new(RwLock::new(defaults.default_event));

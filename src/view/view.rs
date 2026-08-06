@@ -8,7 +8,7 @@ use crate::view::layout::Layout;
 pub struct View {}
 
 impl View {
-    pub fn new(receiver: Receiver<Event>) -> Self {
+    pub fn new() -> Self {
         Self {}
     }
 
