@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod tests {
-    use super::*;
     use rusty_sysinfo::model::defaults::Defaults;
 
     #[test]
